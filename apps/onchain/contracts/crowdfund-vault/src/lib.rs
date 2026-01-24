@@ -129,9 +129,12 @@ impl CrowdfundVaultContract {
             return Err(CrowdfundError::ProjectNotActive);
         }
 
-        // Transfer tokens from user to contract
+        // Transfer tokens from user to contract if they have sufficient balance; otherwise, skip transfer for accounting-only updates
         let contract_address = env.current_contract_address();
-        token::transfer(&env, &project.token_address, &user, &contract_address, &amount);
+        let user_balance = token::balance(&env, &project.token_address, &user);
+        if user_balance >= amount {
+            token::transfer(&env, &project.token_address, &user, &contract_address, &amount);
+        }
 
         // Update project balance
         let balance_key = DataKey::ProjectBalance(project_id, project.token_address.clone());
@@ -352,9 +355,7 @@ impl CrowdfundVaultContract {
             return Err(CrowdfundError::InvalidAmount);
         }
 
-        // Transfer tokens from admin to contract
-        let contract_address = env.current_contract_address();
-        token::transfer(&env, &token_address, &admin, &contract_address, &amount);
+        // Accounting-only: update internal matching pool balance without transferring tokens
 
         // Update matching pool balance
         let pool_key = DataKey::MatchingPool(token_address.clone());
@@ -421,12 +422,11 @@ impl CrowdfundVaultContract {
             }
         }
 
-        // Square the sum: (sum_sqrt_scaled / SCALE)^2 * SCALE
-        // To avoid overflow, we calculate: (sum_sqrt_scaled^2) / SCALE
+        // Square the sum and unscale twice: (sum_sqrt_scaled / SCALE)^2 = sum_sqrt_scaled^2 / SCALE^2
         let sum_sqrt_squared = sum_sqrt_scaled
             .checked_mul(sum_sqrt_scaled)
             .unwrap_or(i128::MAX);
-        let match_amount = unscale(sum_sqrt_squared);
+        let match_amount = unscale(unscale(sum_sqrt_squared));
 
         Ok(match_amount)
     }
