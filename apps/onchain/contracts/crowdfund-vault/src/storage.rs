@@ -8,9 +8,9 @@ pub enum DataKey {
     ProjectBalance(u64, Address), // (project_id, token) -> i128
     MilestoneApproved(u64),       // project_id -> bool
     NextProjectId,                // -> u64
-    Contribution(u64, Address),  // (project_id, contributor) -> i128
+    Contribution(u64, Address),   // (project_id, contributor) -> i128
     ContributorCount(u64),        // project_id -> u32
-    Contributor(u64, u32),         // (project_id, index) -> Address
+    Contributor(u64, u32),        // (project_id, index) -> Address
     MatchingPool(Address),        // token_address -> i128
 }
 

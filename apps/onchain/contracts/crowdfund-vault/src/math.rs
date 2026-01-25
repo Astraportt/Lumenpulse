@@ -6,7 +6,7 @@ const SCALE: i128 = 1_000_000_000;
 
 /// Calculate integer square root using binary search with fixed-point arithmetic
 /// Returns sqrt(value) * SCALE to maintain precision
-/// 
+///
 /// We want to find x such that (x / SCALE)^2 ≈ value
 /// This means x^2 / SCALE^2 ≈ value, so x^2 ≈ value * SCALE^2
 pub fn sqrt_scaled(value: i128) -> i128 {
@@ -23,32 +23,32 @@ pub fn sqrt_scaled(value: i128) -> i128 {
     // We want sqrt(value) * SCALE
     // Let's find the integer square root of (value * SCALE^2)
     // But we need to be careful about overflow
-    
+
     // Alternative approach: find sqrt(value) first, then scale
     // Use binary search on value itself, then scale the result
-    
+
     let mut low = 0i128;
     let mut high = value;
-    
+
     // Binary search for integer square root of value
     while low < high {
         let mid = (low + high + 1) / 2;
-        
+
         // Check if mid^2 <= value
         let mid_squared = mid.checked_mul(mid).unwrap_or(i128::MAX);
-        
+
         if mid_squared <= value {
             low = mid;
         } else {
             high = mid - 1;
         }
     }
-    
+
     // Now scale the result: low * SCALE
     // But we need more precision, so we'll use a refinement
     // For better precision, we can calculate: low * SCALE + remainder
     let integer_part = low * SCALE;
-    
+
     // Calculate remainder for better precision
     // remainder = (value - low^2) * SCALE / (2 * low + 1) approximately
     let low_squared = low.checked_mul(low).unwrap_or(0);
@@ -64,7 +64,7 @@ pub fn sqrt_scaled(value: i128) -> i128 {
     } else {
         0
     };
-    
+
     integer_part + remainder
 }
 

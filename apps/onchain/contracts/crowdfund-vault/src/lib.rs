@@ -133,7 +133,13 @@ impl CrowdfundVaultContract {
         let contract_address = env.current_contract_address();
         let user_balance = token::balance(&env, &project.token_address, &user);
         if user_balance >= amount {
-            token::transfer(&env, &project.token_address, &user, &contract_address, &amount);
+            token::transfer(
+                &env,
+                &project.token_address,
+                &user,
+                &contract_address,
+                &amount,
+            );
         }
 
         // Update project balance
@@ -145,24 +151,32 @@ impl CrowdfundVaultContract {
 
         // Track individual contribution for quadratic funding
         let contribution_key = DataKey::Contribution(project_id, user.clone());
-        let current_contribution: i128 = env.storage().persistent().get(&contribution_key).unwrap_or(0);
-        
+        let current_contribution: i128 = env
+            .storage()
+            .persistent()
+            .get(&contribution_key)
+            .unwrap_or(0);
+
         // If this is a new contributor, add them to the contributors list
         if current_contribution == 0 {
             let contributor_count_key = DataKey::ContributorCount(project_id);
-            let contributor_count: u32 = env.storage().persistent().get(&contributor_count_key).unwrap_or(0);
-            
+            let contributor_count: u32 = env
+                .storage()
+                .persistent()
+                .get(&contributor_count_key)
+                .unwrap_or(0);
+
             // Store contributor at index
             env.storage()
                 .persistent()
                 .set(&DataKey::Contributor(project_id, contributor_count), &user);
-            
+
             // Increment contributor count
             env.storage()
                 .persistent()
                 .set(&contributor_count_key, &(contributor_count + 1));
         }
-        
+
         // Update contribution amount
         env.storage()
             .persistent()
@@ -494,7 +508,10 @@ impl CrowdfundVaultContract {
     }
 
     /// Get matching pool balance for a token
-    pub fn get_matching_pool_balance(env: Env, token_address: Address) -> Result<i128, CrowdfundError> {
+    pub fn get_matching_pool_balance(
+        env: Env,
+        token_address: Address,
+    ) -> Result<i128, CrowdfundError> {
         // Check if contract is initialized
         if !env.storage().instance().has(&DataKey::Admin) {
             return Err(CrowdfundError::NotInitialized);
@@ -505,7 +522,11 @@ impl CrowdfundVaultContract {
     }
 
     /// Get contribution amount for a specific user and project
-    pub fn get_contribution(env: Env, project_id: u64, contributor: Address) -> Result<i128, CrowdfundError> {
+    pub fn get_contribution(
+        env: Env,
+        project_id: u64,
+        contributor: Address,
+    ) -> Result<i128, CrowdfundError> {
         // Check if contract is initialized
         if !env.storage().instance().has(&DataKey::Admin) {
             return Err(CrowdfundError::NotInitialized);
@@ -521,7 +542,11 @@ impl CrowdfundVaultContract {
         }
 
         let contribution_key = DataKey::Contribution(project_id, contributor);
-        Ok(env.storage().persistent().get(&contribution_key).unwrap_or(0))
+        Ok(env
+            .storage()
+            .persistent()
+            .get(&contribution_key)
+            .unwrap_or(0))
     }
 
     /// Get contributor count for a project
@@ -541,7 +566,11 @@ impl CrowdfundVaultContract {
         }
 
         let contributor_count_key = DataKey::ContributorCount(project_id);
-        Ok(env.storage().persistent().get(&contributor_count_key).unwrap_or(0))
+        Ok(env
+            .storage()
+            .persistent()
+            .get(&contributor_count_key)
+            .unwrap_or(0))
     }
 }
 

@@ -413,10 +413,10 @@ fn test_calculate_match_single_contributor() {
     // match = 1000^2 = 1_000_000
     let match_amount = client.calculate_match(&project_id);
     assert!(match_amount > 0);
-    
+
     // Verify contributor count
     assert_eq!(client.get_contributor_count(&project_id), 1);
-    
+
     // Verify contribution amount
     assert_eq!(client.get_contribution(&project_id, &user), contribution);
 }
@@ -462,12 +462,12 @@ fn test_calculate_match_multiple_contributors() {
 
     // Calculate match
     let match_amount = client.calculate_match(&project_id);
-    
+
     // Verify match is approximately 3600 (allowing for fixed-point rounding)
     // sqrt(100) ≈ 10, sqrt(400) = 20, sqrt(900) = 30
     // sum = 60, match = 3600
     assert!(match_amount >= 3500 && match_amount <= 3700);
-    
+
     // Verify contributor count
     assert_eq!(client.get_contributor_count(&project_id), 3);
 }
@@ -583,7 +583,7 @@ fn test_distribute_match_insufficient_pool() {
 
     // Distribute match (should only distribute what's available)
     let distributed = client.distribute_match(&project_id);
-    
+
     // Should only distribute the pool amount, not the full match
     assert_eq!(distributed, pool_amount);
 
@@ -615,7 +615,7 @@ fn test_multiple_contributions_same_user() {
 
     // Should only count as one contributor
     assert_eq!(client.get_contributor_count(&project_id), 1);
-    
+
     // Total contribution should be 400
     assert_eq!(client.get_contribution(&project_id, &user), 400);
 
