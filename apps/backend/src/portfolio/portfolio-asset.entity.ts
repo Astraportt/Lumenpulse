@@ -1,5 +1,5 @@
 // src/portfolio/portfolio-asset.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn} from 'typeorm';
 import { User } from '../users/user.entity';
 
 @Entity('portfolio_assets')
@@ -25,5 +25,5 @@ export class PortfolioAsset {
 
   @JoinColumn({ name: 'userId' })
   user: User;
-  
+
 }
