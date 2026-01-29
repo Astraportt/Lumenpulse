@@ -76,6 +76,8 @@ export class AuthService {
   /**
    * Generate a cryptographic challenge for the user to sign
    */
+  
+  // eslint-disable-next-line @typescript-eslint/require-await
   async generateChallenge(publicKey: string): Promise<{
     challenge: string;
     nonce: string;
@@ -84,9 +86,9 @@ export class AuthService {
     // Validate public key format
     try {
       Keypair.fromPublicKey(publicKey);
-    } catch (error) {
-      throw new BadRequestException('Invalid Stellar public key format');
-    }
+    }catch (_error) {
+  throw new BadRequestException('Invalid Stellar public key format');
+}
 
     // Generate a random nonce
     const nonce = crypto.randomBytes(32).toString('hex');
@@ -182,7 +184,7 @@ export class AuthService {
     
     try {
       transaction = new Transaction(signedChallenge, networkPassphrase);
-    } catch (error) {
+    } catch (_error) {
       this.challengeStore.delete(publicKey);
       throw new BadRequestException('Invalid transaction format');
     }

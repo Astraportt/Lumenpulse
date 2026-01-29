@@ -1,5 +1,5 @@
-import { SetMetadata } from '@nestjs/common';
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { SetMetadata, createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { Request } from 'express';
 import { User } from 'src/entities/user.entity';
 
 /**
@@ -12,9 +12,9 @@ export const Public = () => SetMetadata('isPublic', true);
  * Usage: @GetUser() user: User
  */
 export const GetUser = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext): User => {
-    const request = ctx.switchToHttp().getRequest();
-    return request.user;
+  (_data: unknown, ctx: ExecutionContext): User => {
+    const request = ctx.switchToHttp().getRequest<Request>();
+    return request.user as User;
   },
 );
 
@@ -23,8 +23,14 @@ export const GetUser = createParamDecorator(
  * Usage: @GetStellarPublicKey() publicKey: string
  */
 export const GetStellarPublicKey = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext): string => {
-    const request = ctx.switchToHttp().getRequest();
-    return request.user?.stellarPublicKey;
+  (_data: unknown, ctx: ExecutionContext): string => {
+    const request = ctx.switchToHttp().getRequest<Request>();
+    const user = request.user as { stellarPublicKey?: string };
+
+    if (!user?.stellarPublicKey) {
+      throw new Error('Stellar public key not found on request user');
+    }
+
+    return user.stellarPublicKey;
   },
 );

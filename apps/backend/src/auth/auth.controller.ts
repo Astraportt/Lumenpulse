@@ -78,17 +78,20 @@ export class AuthController {
       
       return challenge;
     } catch (error) {
-      this.logger.error(`Challenge generation failed: ${error.message}`);
-      
-      throw new HttpException(
-        {
-          statusCode: HttpStatus.BAD_REQUEST,
-          message: error.message || 'Failed to generate challenge',
-          error: 'Bad Request',
-        },
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+  const err = error instanceof Error ? error : new Error('Unknown error');
+
+  this.logger.error(`Challenge generation failed: ${err.message}`);
+
+  throw new HttpException(
+    {
+      statusCode: HttpStatus.BAD_REQUEST,
+      message: err.message,
+      error: 'Bad Request',
+    },
+    HttpStatus.BAD_REQUEST,
+  );
+}
+
   }
 
   @Post('verify')
@@ -118,16 +121,19 @@ export class AuthController {
       
       return result;
     } catch (error) {
-      this.logger.error(`Verification failed: ${error.message}`);
-      
-      throw new HttpException(
-        {
-          statusCode: HttpStatus.UNAUTHORIZED,
-          message: error.message || 'Authentication failed',
-          error: 'Unauthorized',
-        },
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
+  const err = error instanceof Error ? error : new Error('Unknown error');
+
+  this.logger.error(`Verification failed: ${err.message}`);
+
+  throw new HttpException(
+    {
+      statusCode: HttpStatus.UNAUTHORIZED,
+      message: err.message,
+      error: 'Unauthorized',
+    },
+    HttpStatus.UNAUTHORIZED,
+  );
+}
+
   }
 }
