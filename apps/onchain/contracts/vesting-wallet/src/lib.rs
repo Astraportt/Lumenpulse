@@ -1,6 +1,7 @@
 #![no_std]
 
 mod errors;
+mod events;
 mod storage;
 mod token;
 
@@ -110,6 +111,15 @@ impl VestingWalletContract {
             .persistent()
             .set(&DataKey::Vesting(beneficiary), &vesting);
 
+        // Emit VestingCreated event
+        events::VestingCreatedEvent {
+            beneficiary: vesting.beneficiary.clone(),
+            amount: vesting.total_amount,
+            start_time: vesting.start_time,
+            duration: vesting.duration,
+        }
+        .publish(&env);
+
         Ok(())
     }
 
@@ -178,6 +188,15 @@ impl VestingWalletContract {
         env.storage()
             .persistent()
             .set(&DataKey::Vesting(beneficiary), &vesting);
+
+        // Emit TokensClaimed event
+        let remaining = vesting.total_amount - vesting.claimed_amount;
+        events::TokensClaimedEvent {
+            beneficiary: vesting.beneficiary.clone(),
+            amount_claimed: available_amount,
+            remaining,
+        }
+        .publish(&env);
 
         Ok(available_amount)
     }
