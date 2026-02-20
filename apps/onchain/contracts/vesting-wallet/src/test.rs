@@ -571,6 +571,8 @@ fn test_get_claimable_consistency_with_claim() {
     // Verify get_claimable now returns 0 (no time has passed)
     let claimable_after = client.get_claimable(&beneficiary);
     assert_eq!(claimable_after, 0);
+}
+
 // ---------------------------------------------------------------------------
 // Upgradeability tests
 // ---------------------------------------------------------------------------
