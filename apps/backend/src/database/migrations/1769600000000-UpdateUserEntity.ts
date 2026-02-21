@@ -24,7 +24,9 @@ export class UpdateUserEntity1769600000000 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`DROP INDEX "IDX_users_stellarPublicKey"`);
-    await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "stellarPublicKey"`);
+    await queryRunner.query(
+      `ALTER TABLE "users" DROP COLUMN "stellarPublicKey"`,
+    );
     await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "lastName"`);
     await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "firstName"`);
     await queryRunner.query(

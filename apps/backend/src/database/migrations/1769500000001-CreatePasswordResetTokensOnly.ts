@@ -6,7 +6,7 @@ export class CreatePasswordResetTokensOnly1769500000001 implements MigrationInte
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Check if table already exists to avoid conflicts
     const tableExists = await queryRunner.hasTable('password_reset_tokens');
-    
+
     if (!tableExists) {
       await queryRunner.query(
         `CREATE TABLE "password_reset_tokens" (
@@ -32,7 +32,7 @@ export class CreatePasswordResetTokensOnly1769500000001 implements MigrationInte
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     const tableExists = await queryRunner.hasTable('password_reset_tokens');
-    
+
     if (tableExists) {
       await queryRunner.query(
         `DROP INDEX "public"."IDX_password_reset_tokens_userId"`,
