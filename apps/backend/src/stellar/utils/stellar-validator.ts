@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { StrKey } from '@stellar/stellar-sdk';
 import { InvalidPublicKeyException } from '../exceptions/stellar.exceptions';
 

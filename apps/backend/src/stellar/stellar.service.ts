@@ -1,8 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Injectable, Logger, Inject } from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
 import { Horizon, NetworkError, NotFoundError } from '@stellar/stellar-sdk';
@@ -26,7 +21,7 @@ export class StellarService {
     config: ConfigType<typeof stellarConfig>,
   ) {
     this.config = config;
-    this.server = new Horizon.Server(config.horizonUrl) as Horizon.Server;
+    this.server = new Horizon.Server(config.horizonUrl);
 
     this.logger.log(
       `StellarService initialized with ${config.network} Horizon API at ${config.horizonUrl}`,
@@ -164,7 +159,7 @@ export class StellarService {
       }
 
       return assetBalance;
-    }) as AssetBalanceDto[];
+    });
   }
 
   /**

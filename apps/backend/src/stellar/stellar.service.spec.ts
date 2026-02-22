@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-require-imports */
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
@@ -78,6 +75,7 @@ describe('StellarService', () => {
       expect(result.balances).toHaveLength(1);
       expect(result.balances[0]).toHaveProperty('assetType', 'native');
       expect(result.balances[0]).toHaveProperty('balance', '1000.0000000');
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(mockServer.loadAccount).toHaveBeenCalledWith(validPublicKey);
     });
 
@@ -121,6 +119,7 @@ describe('StellarService', () => {
     it('should return true when Horizon is available', async () => {
       const isHealthy = await service.checkHealth();
       expect(isHealthy).toBe(true);
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(mockServer.root).toHaveBeenCalled();
     });
 
